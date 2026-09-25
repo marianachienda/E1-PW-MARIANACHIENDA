@@ -85,7 +85,7 @@
               type="number"
               id="edad"
               name="edad"
-              min = "16"
+              min = "1"
               max = "100"
               class="form-control"
               placeholder="Ingrese la edad..."
@@ -275,15 +275,21 @@
 
     function agregar(event){
         event.preventDefault();
-
-        let name = document.getElementById("name").value;
         let studentsTable = document.getElementById("tablaStudents");
+        let name = document.getElementById("name").value;
         let studentId = document.getElementById("studentId").value;
         let apellido = document.getElementById("apellido").value;
         let carrera = document.getElementById("carrera").value;
         let edad = document.getElementById("edad").value;
+        
+        if (edad < 16 || edad > 100) {
+        alertMessage.classList.remove("d-none");
+        alertMessage.classList.add("alert-danger");
+        alertMessage.innerHTML = "La edad debe estar entre 16 y 100 años.";
+        alertMessage.classList.remove("d-none");
 
-        if(studentId=="" && edad>16 && edad<100){
+
+        } else if(studentId==""){
           let tr = document.createElement("TR");
           let td1 = document.createElement("TD");
           let td2 = document.createElement("TD");
@@ -307,25 +313,29 @@
           tr.appendChild(td5);
           tr.appendChild(td6);
 
-          console.log(tr);
-
+        
           studentsTable.children[1].appendChild(tr);
-          
-        alertMessage.classList.remove("d-none");
-        alertMessage.classList.add("alert-success");
-        alertMessage.innerHTML = "Estudiante agregado con éxito.";
 
+          alertMessage.classList.remove("d-none");
+        alertMessage.classList.add("alert-success");
+        alertMessage.innerHTML = "Estudiante editado con éxito.";
+
+          limpiar(event);
+          
+        
           
         }else{
           let tbody = studentsTable.children[1];
 
           for (let tr of tbody.children) {
-            console.log("1 ++++++++++++++++++++")
-            console.log(typeof tr.children[0].innerHTML.trim())
-            console.log(typeof studentId)
+           
             
             if(tr.children[0].innerHTML.trim() == studentId){
               tr.children[1].innerHTML = name;
+              tr.children[2].innerHTML = apellido;
+              tr.children[3].innerHTML = carrera;
+              tr.children[4].innerHTML = edad;
+
               document.getElementById("studentId").value="";
               document.getElementById("name").value="";
               document.getElementById("apellido").value="";
@@ -336,15 +346,15 @@
             }
           }
         
-        alertMessage.classList.remove("d-none");
-        alertMessage.classList.add("alert-danger");
-        alertMessage.innerHTML = "Estudiante no se puede agregar porque no cumple con la edad.";
+        
+        
+        
         }
         
         
         setInterval(() => {
         alertMessage.classList.add("d-none");
-    }, 3000);
+    }, 5000);
     }
 
     function eliminar(id, event){
@@ -355,7 +365,7 @@
         alertMessage.innerHTML = "Estudiante eliminado con éxito.";
         setInterval(() => {
       alertMessage.classList.add("d-none");
-    }, 3000);
+    }, 5000);
 
     }
 
@@ -363,11 +373,11 @@
         let tr = event.currentTarget.parentElement.parentElement;
         let idRow = tr.children[0].innerHTML;
         let name = tr.children[1].innerHTML;
-    
         let apellido = tr.children[2].innerHTML;
         let carrera = tr.children[3].innerHTML;
         let edad = tr.children[4].innerHTML;
 
+        
         document.getElementById("cardTitle").innerHTML = "<i class=\"fa fa-edit me-2\"></i>Editar Estudiante";
 
         document.getElementById("name").value = name.trim();
@@ -376,11 +386,6 @@
         document.getElementById("edad").value = edad.trim();
         document.getElementById("studentId").value = id;
 
-        alertMessage.classList.remove("d-none");
-        alertMessage.classList.add("alert-success");
-        alertMessage.innerHTML = "Estudiante editado con éxito.";
-        setInterval(() => {
-            alertMessage.classList.add("d-none");
-        }, 3000);
+        
     }
 </script>
