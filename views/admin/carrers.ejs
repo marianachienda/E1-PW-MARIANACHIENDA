@@ -23,7 +23,7 @@
     <div class="card">
 
       <div class="card-header">
-        <h6 class="mb-0">
+        <h6 class="mb-0" id="cardTitle">
           <i class="fa fa-plus me-2"></i>
           Nueva Carrera
         </h6>
@@ -39,6 +39,8 @@
               Nombre
             </label>
 
+            <input type="hidden" name="" id="carrerId">
+
             <input
               type="text"
               id="name"
@@ -47,19 +49,35 @@
               placeholder="Ingrese el nombre de la carrera..."
               required
             >
+          </div>
+
+          <div class="mb-3">
+
+            <label for="name" class="form-label">
+              edad
+            </label>
+
+            <input
+              type="text"
+              id="edad"
+              name="edad"
+              class="form-control"
+              placeholder="Ingrese la edad..."
+              required
+            >
 
           </div>
 
 
           <div class="d-flex justify-content-end gap-2">
 
-            <a
-              href="/carrers"
+            <button
               class="btn btn-outline-secondary"
+              onclick="limpiar(event)"
             >
               <i class="fa fa-refresh me-1"></i>
               Limpiar
-            </a>
+          </button>
 
             <button
               type="submit"
@@ -203,28 +221,52 @@
 <script>
     let carrerRows = document.getElementById("carrers").children[1].children.length;
 
+    function limpiar(event){
+      event.preventDefault();
+      document.getElementById("carrerId").value="";
+      document.getElementById("name").value="";
+      document.getElementById("cardTitle").innerHTML = "Nueva Carrera";
+    }
+
     function agregar(event){
         event.preventDefault();
 
         let name = document.getElementById("name").value;
         let carrersTable = document.getElementById("carrers");
-        
-        let tr = document.createElement("TR");
-        let td1 = document.createElement("TD");
-        let td2 = document.createElement("TD");
-        let td3 = document.createElement("TD");
+        let carrerId = document.getElementById("carrerId").value;
 
-        carrerRows = carrerRows + 1;
-        td1.innerHTML = carrerRows;
-        td2.innerHTML = name;
+        if(carrerId==""){
+          let tr = document.createElement("TR");
+          let td1 = document.createElement("TD");
+          let td2 = document.createElement("TD");
+          let td3 = document.createElement("TD");
 
-        tr.appendChild(td1);
-        tr.appendChild(td2);
-        tr.appendChild(td3);
+          carrerRows = carrerRows + 1;
+          td1.innerHTML = carrerRows;
+          td2.innerHTML = name;
 
-        console.log(tr);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          tr.appendChild(td3);
 
-        carrersTable.children[1].appendChild(tr);
+          console.log(tr);
+
+          carrersTable.children[1].appendChild(tr);
+        }else{
+          let tbody = carrersTable.children[1];
+
+          for (let tr of tbody.children) {
+            console.log("1 ++++++++++++++++++++")
+            console.log(typeof tr.children[0].innerHTML.trim())
+            console.log(typeof carrerId)
+            if(tr.children[0].innerHTML.trim() == carrerId){
+              tr.children[1].innerHTML = name;
+              document.getElementById("carrerId").value="";
+              document.getElementById("name").value="";
+              document.getElementById("cardTitle").innerHTML = "Nueva Carrera";
+            }
+          }
+        }
     }
 
     function eliminar(id, event){
@@ -237,6 +279,9 @@
         let idRow = tr.children[0].innerHTML;
         let name = tr.children[1].innerHTML;
 
-        document.getElementById("name").value = name;
+        document.getElementById("cardTitle").innerHTML = "Editar Carrera";
+
+        document.getElementById("name").value = name.trim();
+        document.getElementById("carrerId").value = id;
     }
 </script>
