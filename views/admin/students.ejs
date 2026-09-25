@@ -1,0 +1,386 @@
+<!-- views/admin/students.ejs -->
+
+<% layout("layouts/admin2") %>
+
+<main class="main-content"> <div class="container-fluid">
+<!-- PAGE HEADER -->
+<h3 class="mb-4">
+  <a href="/admin/academic">
+    <i class="fa fa-book me-2"></i>
+    Gestión Académica
+  </a>
+  / Estudiantes
+</h3>
+
+
+<div class="row">
+
+  <!-- ========================= -->
+  <!-- FORMULARIO -->
+  <!-- ========================= -->
+  <div class="col-lg-4 col-md-5 mb-4">
+
+    <div class="card">
+
+      <div class="card-header">
+        <h6 class="mb-0" id="cardTitle">
+          <i class="fa fa-plus me-2"></i>
+          Nuevo Estudiante
+        </h6>
+      </div>
+
+      <div class="card-body">
+
+        <form method="POST" action="/students">
+
+          <input type="hidden" id="studentId">
+
+          <div class="mb-3">
+            <label for="name" class="form-label">
+              Nombre
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-control"
+              placeholder="Ingrese el nombre del estudiante..."
+              required
+            >
+          </div>
+
+          <div class="mb-3">
+            <label for="province" class="form-label">
+              Apellido
+            </label>
+            <input
+              type="text"
+              id="apellido"
+              name="apellido"
+              class="form-control"
+              placeholder="Ingrese el apellido..."
+              required
+            >
+          </div>
+
+          <div class="mb-3">
+            <label for="region" class="form-label">
+              Carrera
+            </label>
+            <input
+              type="text"
+              id="carrera"
+              name="carrera"
+              class="form-control"
+              placeholder="Ingrese la carrera..."
+              required
+            >
+          </div>
+
+          <div class="mb-3">
+            <label for="region" class="form-label">
+              Edad
+            </label>
+            <input
+              type="number"
+              id="edad"
+              name="edad"
+              min = "16"
+              max = "100"
+              class="form-control"
+              placeholder="Ingrese la edad..."
+              required
+            >
+          </div>
+
+          <div class="d-flex justify-content-end gap-2">
+            <button
+              class="btn btn-outline-secondary"
+              onclick="limpiar(event)"
+            >
+              <i class="fa fa-refresh me-1"></i>
+              Limpiar
+            </button>
+
+            <button
+              type="submit"
+              class="btn btn-success"
+              id="btnGuardar"
+              onclick="agregar(event)"
+            >
+              <i class="fa fa-save me-1"></i>
+              Guardar
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- LISTADO -->
+  <!-- ========================= -->
+  <div class="col-lg-8 col-md-7 mb-4">
+
+    <div class="card">
+
+      <div class="card-header">
+        <h6 class="mb-0">
+          <i class="fa fa-list me-2"></i>
+          Lista de Estudiantes
+        </h6>
+      </div>
+
+
+      <div class="card-body">
+
+        <!-- HEADER ACTIONS -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+          <div class="text-muted">
+            <i class="fa fa-graduation-cap me-1"></i>
+            Distritos registrados
+          </div>
+
+          <div>
+            <a
+              href="/students/new"
+              class="btn btn-success"
+            >
+              <i class="fa fa-plus"></i>
+              Agregar Registro
+            </a>
+          </div>
+
+        </div>
+
+        <div class="alert d-none" role="alert" id="alertMessage">
+            A simple danger alert—check it out!
+        </div>
+
+
+        <!-- TABLE -->
+        <div class="table-responsive">
+
+          <table class="table table-striped table-hover" id="tablaStudents">
+
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Carrera</th>
+                <th>Edad</th>
+                <th class="text-end">Acciones</th>
+              </tr>
+            </thead>
+
+
+            <tbody>
+
+              <% if (students && students.length > 0) { %>
+
+                <% for (const student of students) { %>
+
+                  <tr>
+
+                    <td>
+                      <%= student.id %>
+                    </td>
+
+                    <td>
+                      <%= student.name %>
+                    </td>
+
+                    <td>
+                      <%= student.apellido %>
+                    </td>
+
+                    <td>
+                      <%= student.carrera %>
+                    </td>
+
+                    <td>
+                      <%= student.edad %>
+                    </td>
+
+                    <td class="text-end">
+
+                      <button
+                        class="btn btn-sm btn-outline-secondary me-1"
+                        onclick="editar(<%= student.id %>, event)"
+                      >
+                        <i class="fa fa-edit" ></i>
+                        Editar
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        onclick="eliminar(<%= student.id %>, event)"
+                      >
+                        <i class="fa fa-trash"></i>
+                        Eliminar
+                      </button>
+
+                    </td>
+
+                  </tr>
+
+                <% } %>
+
+              <% } else { %>
+
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-4">
+                    No se encontraron estudiantes.
+                  </td>
+                </tr>
+
+              <% } %>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</div> </main>
+
+<script>
+    let studentsRows = document.getElementById("tablaStudents").children[1].children.length;
+
+    function limpiar(event){
+      event.preventDefault();
+
+      document.getElementById("studentId").value="";
+      document.getElementById("name").value="";
+      document.getElementById("apellido").value="";
+      document.getElementById("carrera").value="";
+      document.getElementById("edad").value="";
+      document.getElementById("cardTitle").innerHTML = "<i class=\"fa fa-plus me-2\"></i>Nuevo Estudiante";
+    }
+
+    function agregar(event){
+        event.preventDefault();
+
+        let name = document.getElementById("name").value;
+        let studentsTable = document.getElementById("tablaStudents");
+        let studentId = document.getElementById("studentId").value;
+        let apellido = document.getElementById("apellido").value;
+        let carrera = document.getElementById("carrera").value;
+        let edad = document.getElementById("edad").value;
+
+        if(studentId=="" && edad>16 && edad<100){
+          let tr = document.createElement("TR");
+          let td1 = document.createElement("TD");
+          let td2 = document.createElement("TD");
+          let td3 = document.createElement("TD");
+          let td4 = document.createElement("TD");
+          let td5 = document.createElement("TD");
+          let td6 = document.createElement("TD");
+
+          studentsRows = studentsRows + 1;
+          td1.innerHTML = studentsRows;
+          td2.innerHTML = name;
+          td3.innerHTML = apellido;
+          td4.innerHTML = carrera;
+          td5.innerHTML = edad;
+          td6.innerHTML = "";
+
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          tr.appendChild(td3);
+          tr.appendChild(td4);
+          tr.appendChild(td5);
+          tr.appendChild(td6);
+
+          console.log(tr);
+
+          studentsTable.children[1].appendChild(tr);
+          
+        alertMessage.classList.remove("d-none");
+        alertMessage.classList.add("alert-success");
+        alertMessage.innerHTML = "Estudiante agregado con éxito.";
+
+          
+        }else{
+          let tbody = studentsTable.children[1];
+
+          for (let tr of tbody.children) {
+            console.log("1 ++++++++++++++++++++")
+            console.log(typeof tr.children[0].innerHTML.trim())
+            console.log(typeof studentId)
+            
+            if(tr.children[0].innerHTML.trim() == studentId){
+              tr.children[1].innerHTML = name;
+              document.getElementById("studentId").value="";
+              document.getElementById("name").value="";
+              document.getElementById("apellido").value="";
+              document.getElementById("carrera").value="";
+              document.getElementById("edad").value="";
+              document.getElementById("cardTitle").innerHTML = "Nuevo Estudiante";
+              
+            }
+          }
+        
+        alertMessage.classList.remove("d-none");
+        alertMessage.classList.add("alert-danger");
+        alertMessage.innerHTML = "Estudiante no se puede agregar porque no cumple con la edad.";
+        }
+        
+        
+        setInterval(() => {
+        alertMessage.classList.add("d-none");
+    }, 3000);
+    }
+
+    function eliminar(id, event){
+        let tr = event.currentTarget.parentElement.parentElement;
+        tr.remove();
+        alertMessage.classList.remove("d-none");
+        alertMessage.classList.add("alert-success");
+        alertMessage.innerHTML = "Estudiante eliminado con éxito.";
+        setInterval(() => {
+      alertMessage.classList.add("d-none");
+    }, 3000);
+
+    }
+
+    function editar(id, event){
+        let tr = event.currentTarget.parentElement.parentElement;
+        let idRow = tr.children[0].innerHTML;
+        let name = tr.children[1].innerHTML;
+    
+        let apellido = tr.children[2].innerHTML;
+        let carrera = tr.children[3].innerHTML;
+        let edad = tr.children[4].innerHTML;
+
+        document.getElementById("cardTitle").innerHTML = "<i class=\"fa fa-edit me-2\"></i>Editar Estudiante";
+
+        document.getElementById("name").value = name.trim();
+        document.getElementById("apellido").value = apellido.trim();
+        document.getElementById("carrera").value = carrera.trim();
+        document.getElementById("edad").value = edad.trim();
+        document.getElementById("studentId").value = id;
+
+        alertMessage.classList.remove("d-none");
+        alertMessage.classList.add("alert-success");
+        alertMessage.innerHTML = "Estudiante editado con éxito.";
+        setInterval(() => {
+            alertMessage.classList.add("d-none");
+        }, 3000);
+    }
+</script>

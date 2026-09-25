@@ -2,6 +2,7 @@
 import { Router } from 'express';
 import * as admins from '../controllers/admin_controllers.js';
 import * as carrers from '../controllers/carrer_controllers.js';
+import * as students from '../controllers/students_controllers.js';
 import * as nationApis from '../apis/nations_apis.js';
 import { redirectIfAuthenticated, requireAuth } from '../../configs/middlewares.js'; 
 
@@ -22,5 +23,6 @@ router.put('/api/v1/nations/:id', nationApis.updateNation);
 router.delete('/api/v1/nations/:id', nationApis.deleteNation);
 // carrers
 router.get('/admin/carrers', carrers.home);
+router.get('/admin/students', students.home);
 
 export default router;
